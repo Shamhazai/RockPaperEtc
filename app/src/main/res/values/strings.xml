@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RockPaper</string>
+    <string name="win">ВЫ ПОБЕДИЛИ!</string>
+    <string name="loss">ВЫ ПРОИГРАЛИ!</string>
+    <string name="tie">НИЧЬЯ</string>
+
+</resources>
