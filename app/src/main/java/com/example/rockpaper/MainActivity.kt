@@ -1,14 +1,13 @@
 package com.example.rockpaper
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.media.Image
 import android.os.Bundle
+import android.os.SystemClock
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import kotlin.random.Random
 
@@ -16,10 +15,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var playerChoice: String
     private lateinit var computerChoice: String
+    private var startTime = 0L
+
+    private var playerScore = 0
+    private var computerScore = 0
+    private var tieScore = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        startTime = SystemClock.elapsedRealtime()
+
         val resultImg = findViewById<ImageView>(R.id.imageViewTop)
         val resultTextView = findViewById<TextView>(R.id.result_text_view)
         val rockButton = findViewById<Button>(R.id.rock_button)
@@ -28,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         val lizardButton = findViewById<Button>(R.id.lizard_button)
         val spockButton = findViewById<Button>(R.id.spock_button)
         val startButton = findViewById<Button>(R.id.start_button)
+        val statsButton = findViewById<Button>(R.id.stats_button)
 
         rockButton.setOnClickListener { playGame("rock") }
         paperButton.setOnClickListener { playGame("paper") }
@@ -35,7 +42,18 @@ class MainActivity : AppCompatActivity() {
         lizardButton.setOnClickListener { playGame("lizard") }
         spockButton.setOnClickListener { playGame("spock") }
 
-        startButton.setOnClickListener {         // Disable buttons if the user hasn't made a choice yet
+        // Показ статистики
+        statsButton.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(this)
+            val elapsedTimeS = "%.2f".format((SystemClock.elapsedRealtime() - startTime) / 1000f)
+            dialogBuilder.setTitle("Статистика")
+            dialogBuilder.setMessage("Время (с): $elapsedTimeS \n Побед: $playerScore \n Поражений: $computerScore \n Ничья: $tieScore")
+            dialogBuilder.setPositiveButton("OK", null)
+            val dialog: AlertDialog = dialogBuilder.create()
+            dialog.show()
+        }
+
+        startButton.setOnClickListener {
             rockButton.isEnabled = true
             paperButton.isEnabled = true
             scissorsButton.isEnabled = true
@@ -135,8 +153,19 @@ class MainActivity : AppCompatActivity() {
         // Показ результатов
         val resultImg = findViewById<ImageView>(R.id.imageViewTop)
         val resultTextView = findViewById<TextView>(R.id.result_text_view)
-        resultTextView.text = getResult(playerChoice, computerChoice, resultImg)
-        getResult(computerChoice, playerChoice, resultImg)
+        val result = getResult(playerChoice, computerChoice, resultImg)
+        resultTextView.text = result
+        when (result) {
+            getString(R.string.win) -> {
+                playerScore++
+            }
+            getString(R.string.loss) -> {
+                computerScore++
+            }
+            else -> {
+                tieScore++
+            }
+        }
 
         val playerChoiceImg = findViewById<ImageView>(R.id.imageViewLeft)
         val computerChoiceImg = findViewById<ImageView>(R.id.imageViewRight)
