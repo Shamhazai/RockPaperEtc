@@ -47,12 +47,12 @@ class MainActivity : AppCompatActivity() {
             val dialogBuilder = AlertDialog.Builder(this)
             val elapsedTimeS = "%.2f".format((SystemClock.elapsedRealtime() - startTime) / 1000f)
             dialogBuilder.setTitle("Статистика")
-            dialogBuilder.setMessage("Время (с): $elapsedTimeS \n Побед: $playerScore \n Поражений: $computerScore \n Ничья: $tieScore")
+            dialogBuilder.setMessage("Время : $elapsedTimeS с. \n Побед: $playerScore \n Поражений: $computerScore \n Ничья: $tieScore")
             dialogBuilder.setPositiveButton("OK", null)
             val dialog: AlertDialog = dialogBuilder.create()
             dialog.show()
         }
-
+        // нажатие кнопки "Игра"
         startButton.setOnClickListener {
             rockButton.isEnabled = true
             paperButton.isEnabled = true
@@ -153,7 +153,11 @@ class MainActivity : AppCompatActivity() {
         // Показ результатов
         val resultImg = findViewById<ImageView>(R.id.imageViewTop)
         val resultTextView = findViewById<TextView>(R.id.result_text_view)
+
+        // Вызываем getResult два раза, для проставления картинок выигрыша и игрока, и компьютера
         val result = getResult(playerChoice, computerChoice, resultImg)
+        getResult(computerChoice, playerChoice, resultImg)
+
         resultTextView.text = result
         when (result) {
             getString(R.string.win) -> {
